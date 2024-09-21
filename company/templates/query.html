@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+
+{% block title %}Query Companies - Catalyst Count{% endblock %}
+
+{% block content %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Query Builder</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .container {
+            margin-top: 20px;
+        }
+        .form-row {
+            margin-bottom: 15px;
+        }
+        .btn-group {
+            margin-top: 15px;
+        }
+        .alert {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        {% if total_records %}
+            <div class="alert alert-success">
+                {{ total_records }} records found for the query
+            </div>
+        {% else %}
+            <div class="alert alert-warning">
+                No records found for the query
+            </div>
+        {% endif %}
+        <ul>
+            {% for record in records %}
+                <li>{{ record }}</li> 
+            {% endfor %}
+        </ul>
+    </div>
+    
+    <h3>Query Builder</h3>
+    <form method="get" action="">
+        <div class="form-row">
+            <div class="col-md-4 mb-3">
+                <input type="text" class="form-control" name="keyword" placeholder="Keyword" value="{{ request.GET.keyword }}">
+            </div>
+            <div class="col-md-4 mb-3">
+                <select class="form-control" name="industry">
+                    <option value="">Industry</option>
+                    {% for ind in industries %}
+                        <option value="{{ ind }}" {% if request.GET.industry == ind %}selected{% endif %}>{{ ind }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="col-md-4 mb-3">
+                <input type="txt" class="form-control" name="founded_year" placeholder="Year Founded" value="{{ request.GET.founded_year }}">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="col-md-4 mb-3">
+                <input type="text" class="form-control" name="city" placeholder="City" value="{{ request.GET.city }}">
+            </div>
+            <div class="col-md-4 mb-3">
+                <input type="text" class="form-control" name="locality" placeholder="locality" value="{{ request.GET.locality }}">
+            </div>
+            <div class="col-md-4 mb-3">
+                <input type="text" class="form-control" name="country" placeholder="Country" value="{{ request.GET.country }}">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="col-md-4 mb-3">
+                <input type="txt" class="form-control" name="current_employee_estimate" placeholder="current_employee_estimate" value="{{ request.GET.current_employee_estimate }}">
+            </div>
+            <div class="col-md-4 mb-3">
+                <input type="txt" class="form-control" name="total_employee_estimate" placeholder="Total Employees" value="{{ request.GET.total_employee_estimate  }}">
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button type="submit" class="btn btn-primary">Query Data</button>
+            <a href="{% url 'query' %}" class="btn btn-secondary">Reset</a>
+        </div>
+    </form>
+
+    <h4 class="mt-5">Results:</h4>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Founded Year</th>
+                <th>Industry</th>
+                <th>City</th>
+                <th>locality</th>
+                <th>Country</th>
+                <th>Current Employees</th>
+                <th>Total Employees</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for company in company_list %}
+            <tr>
+                <td>{{ company.name }}</td>
+                <td>{{ company.founded_year }}</td>
+                <td>{{ company.industry }}</td>
+                <td>{{ company.locality }}</td> <!-- Assuming 'locality' refers to city/state -->
+                <td>{{ company.country }}</td>
+                <td>{{ company.current_employee_estimate }}</td>
+                <td>{{ company.total_employee_estimate }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8">No results found</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h5>Total Count: {{ company_list|length }}</h5>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+<!-- </html> -->
+
+{% endblock %}
